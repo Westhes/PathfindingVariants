@@ -1,5 +1,6 @@
 # Pathfinding variants
-This project focuses on different pathfinding variants, including an unique variant I made during my internship.
+The goal of this project was to explore different pathfinding variants.
+In the project files you can find code for testing out any of the algorithms below.
 
 ![Dijkstra](https://i.imgur.com/9vZ8zlO.png)
 ## Dijkstra
