@@ -33629,10 +33629,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3e98338fd818743b091d68998b3bb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startNode: {fileID: 1242515958}
-  goalNode: {fileID: 1716836842}
+  startNode: {fileID: 576520582}
+  goalNode: {fileID: 1190880837}
   SearchWeight: 1.6
-  selectedAlgorithm: 0
+  selectedAlgorithm: 1
+  debugAnimationInterval: 0.05
 --- !u!1 &765430965
 GameObject:
   m_ObjectHideFlags: 0

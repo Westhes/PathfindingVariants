@@ -32,6 +32,20 @@ public abstract class PathfindAlgorithmBase : IPathfindAlgorithm
         }
         return path.ToArray();
     }
+    /// <summary> Traces back the steps the pathfinding alogithm found optimal. </summary>
+    /// <param name="maxTraceLength"> Define the max trace length ahead of time, in order to avoid re-scaling of the list. </param>
+    /// <returns> An array of nodes that begins from the finish and ends at the start. (So inverted!)</returns>
+    public static Node[] Traceback(Node finish, int maxTraceLength)
+    {
+        List<Node> path = new List<Node>(maxTraceLength);
+        Node n = finish;
+        while (n != null)
+        {
+            path.Add(n);
+            n = n.Parent;
+        }
+        return path.ToArray();
+    }
 
     protected static bool IsGoal(Node cNode, Node endNode)
     {

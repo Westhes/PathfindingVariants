@@ -26,7 +26,7 @@ public class Node : IHeapItem<Node>
     public Vector2Int Position { get; set; }
 
     [field: NonSerialized]
-    public Node[] Neighbors { get; set; }
+    public ArrayIterator<Node> Neighbors { get; set; }
 
     /// <summary> The previous & shortest path towards this node. </summary>
     [field: NonSerialized]

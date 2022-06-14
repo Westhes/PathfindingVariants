@@ -7,6 +7,7 @@ using UnityEngine;
 public enum PathfindingAlgorithms
 {
     A_Star,
+    Custom_DepthFirstSearch,
     DepthFirstSearch,
     Dijkstra,
 }
@@ -20,6 +21,8 @@ public class Pathfinding : MonoBehaviour
     [SerializeField] float SearchWeight = 2f;
 
     [SerializeField] PathfindingAlgorithms selectedAlgorithm;
+    [Range(0.01f, 2f)]
+    [SerializeField] float debugAnimationInterval = 0.2f;
     private IPathfindAlgorithm algorithm;
     private Coroutine pathTraversal;
 
@@ -92,7 +95,7 @@ public class Pathfinding : MonoBehaviour
         algorithm.ResetPath(goalNode.Node);
         if (pathTraversal != null) StopCoroutine(pathTraversal);
         if (startNode && goalNode) algorithm.Search(startNode.Node, goalNode.Node);
-        pathTraversal = StartCoroutine(algorithm.DebugTravelPath(goalNode.Node, 0.01f));
+        pathTraversal = StartCoroutine(algorithm.DebugTravelPath(goalNode.Node, debugAnimationInterval));
     }
 
     private void OnValidate()
@@ -109,6 +112,7 @@ public class Pathfinding : MonoBehaviour
             algorithm = selectedAlgorithm switch
             {
                 PathfindingAlgorithms.A_Star => new A_Star(nodeManager.NodeCount),
+                PathfindingAlgorithms.Custom_DepthFirstSearch => new CustomDepthFirstSearch(nodeManager.NodeCount),
                 PathfindingAlgorithms.DepthFirstSearch => new DepthFirstSearch(nodeManager.NodeCount),
                 PathfindingAlgorithms.Dijkstra => new Dijkstra(nodeManager.NodeCount),
                 _ => new A_Star(nodeManager.NodeCount),

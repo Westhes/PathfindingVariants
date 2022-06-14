@@ -10,7 +10,9 @@ using UnityEngine;
 /// </summary>
 public class NodeManager : MonoBehaviour
 {
+    [field: NonSerialized]
     public NodeObject[] NodeObjects { get; set; }
+    [field: NonSerialized]
     public Node[] Nodes { get; private set; }
     public int NodeCount => Nodes.Length;
 
@@ -193,7 +195,7 @@ public class NodeManager : MonoBehaviour
                 }
             }
 
-            Nodes[i].Neighbors = GetNodesByIndices(Nodes, validNeighbors);
+            Nodes[i].Neighbors = new ArrayIterator<Node>(GetNodesByIndices(Nodes, validNeighbors));
         }
     }
 
