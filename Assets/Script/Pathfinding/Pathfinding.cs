@@ -7,6 +7,7 @@ using UnityEngine;
 public enum PathfindingAlgorithms
 {
     A_Star,
+    DepthFirstSearch,
     Dijkstra,
 }
 
@@ -108,6 +109,7 @@ public class Pathfinding : MonoBehaviour
             algorithm = selectedAlgorithm switch
             {
                 PathfindingAlgorithms.A_Star => new A_Star(nodeManager.NodeCount),
+                PathfindingAlgorithms.DepthFirstSearch => new DepthFirstSearch(nodeManager.NodeCount),
                 PathfindingAlgorithms.Dijkstra => new Dijkstra(nodeManager.NodeCount),
                 _ => new A_Star(nodeManager.NodeCount),
             };
