@@ -77,6 +77,7 @@ public class Pathfinding : MonoBehaviour
     IEnumerator DelayedStart()
     {
         while (!nodeManager.IsInitialized) yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
         ApplyAlgorithm();
 
         if (!startNode || !goalNode)
@@ -89,12 +90,13 @@ public class Pathfinding : MonoBehaviour
 
     private void Search()
     {
+        if (!startNode || !goalNode) return;
         nodeManager.ResetNodeMaterials();
-        // Note: while this doesn't do anything incase goalNode gets set, it still fixes the issue that a path gets drawn that does not exist.
-        // It's also a better solution that resetting every node material
+        
         algorithm.ResetPath(goalNode.Node);
         if (pathTraversal != null) StopCoroutine(pathTraversal);
-        if (startNode && goalNode) algorithm.Search(startNode.Node, goalNode.Node);
+        
+        algorithm.Search(startNode.Node, goalNode.Node);
         pathTraversal = StartCoroutine(algorithm.DebugTravelPath(goalNode.Node, debugAnimationInterval));
     }
 

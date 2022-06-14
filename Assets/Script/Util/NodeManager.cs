@@ -32,7 +32,7 @@ public class NodeManager : MonoBehaviour
     [SerializeField]
     private float nodeScale = 0.5f;
 
-    public bool IsInitialized { get; private set; }
+    public bool IsInitialized { get; private set; } = false;
 
     private void Awake()
     {
@@ -57,6 +57,7 @@ public class NodeManager : MonoBehaviour
 
         if (NodeObjects.Length == 0)
         {
+            NodeObjects = new NodeObject[gridWidth * gridHeight];
             Nodes = new Node[gridWidth * gridHeight];
             CreateGrid();
         }
@@ -81,7 +82,9 @@ public class NodeManager : MonoBehaviour
                 go.transform.parent = transform;
                 go.transform.position = new Vector3(x, 0, z);
                 go.transform.localScale = new Vector3(nodeScale, nodeScale, nodeScale);
-                Nodes[i] = go.AddComponent<NodeObject>().Node;
+                
+                NodeObjects[i] = go.AddComponent<NodeObject>();
+                Nodes[i] = NodeObjects[i].Node;
                 i++;
             }
         }

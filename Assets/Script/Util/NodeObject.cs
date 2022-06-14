@@ -73,6 +73,7 @@ public class NodeObject : MonoBehaviour
     public static Material listedMaterial;
 
     private new Renderer renderer;
+    private NodeState currentState;
 
     [field: SerializeField]
     public Node Node { get; set; }
@@ -90,6 +91,10 @@ public class NodeObject : MonoBehaviour
 
     public void SetMaterial(NodeState index)
     {
+        if (currentState == index)
+            return;
+
+        currentState = index;
         renderer.material = index switch
         {
             NodeState.Unvisited => unvisitedMaterial,
