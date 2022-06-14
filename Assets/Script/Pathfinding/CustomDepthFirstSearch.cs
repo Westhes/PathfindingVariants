@@ -46,7 +46,7 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
 #endif
             currentNode.G_cost = depth + 1;
             bool isGoal = IsGoal(currentNode, goal);
-            if (isGoal || currentNode.G_cost == maxDepth || Heuristic(currentNode, goal) > (maxDepth - depth) || !TryGetNewNeighbor(currentNode, out Node neighbor))
+            if (isGoal || Heuristic(currentNode, goal) > (maxDepth - depth) || !TryGetNewNeighbor(currentNode, out Node neighbor))
             {
                 // Go back. We either found a deadend, or the goal.
                 if (isGoal)
