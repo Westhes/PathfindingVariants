@@ -14,7 +14,7 @@ public enum NodeState
 }
 
 /// <summary>
-/// Store Node in a seperate class to avoid class bloat.
+/// Store Node data in a seperate class to avoid MonoBehaviour bloat
 /// </summary>
 [Serializable]
 public class Node : IHeapItem<Node>
