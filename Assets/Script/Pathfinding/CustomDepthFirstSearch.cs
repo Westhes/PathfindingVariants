@@ -1,4 +1,5 @@
 ﻿#define VISUALS
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,12 +7,13 @@ using UnityEngine;
 
 public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
 {
+
+    public CustomDepthFirstSearch(int mapSize) : base(mapSize) => predicate = IsNewNeighbor;
+
     public int MaxDepth { get; set; } = 9;
-
-
-    public CustomDepthFirstSearch(int mapSize) : base(mapSize) { }
-
     public Node[][] Paths { get; private set; }
+
+    private static Predicate<Node> predicate;
 
     public override void Search(Node start, Node finish)
     {
@@ -58,9 +60,8 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
         start.G_cost = 0;
         return foundPaths; 
     }
-    #region Helpers
 
-    private static bool TryGetNewNeighbor(Node node, out Node neighbor) => node.Neighbors.TryFindNext(out neighbor, IsNewNeighbor);
+    private static bool TryGetNewNeighbor(Node node, out Node neighbor) => node.Neighbors.TryFindNext(out neighbor, predicate);
 
     private static bool IsNewNeighbor(Node node) => node.G_cost == 0;
 
@@ -123,5 +124,4 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
             }
         }
     }
-#endregion
 }
