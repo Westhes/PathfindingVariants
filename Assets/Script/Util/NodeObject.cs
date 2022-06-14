@@ -3,6 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum NodeState
+{
+    Unvisited,
+    Visited,
+    Start,
+    Goal,
+    Path,
+    Listed,
+}
+
 /// <summary>
 /// Store Node in a seperate class to avoid class bloat.
 /// </summary>
@@ -41,8 +51,8 @@ public class Node : IHeapItem<Node>
     [field: SerializeField]
     public float F_cost { get; set; }
 
-    /// <summary> 0 = unvisited, 1 = visited, 2 = start, 3 = goal. </summary>
-    public Action<int> SetMaterial { get; set; }
+    /// <summary> 0 = unvisited, 1 = visited, 2 = start, 3 = goal. 4 = path. 5 = listed. </summary>
+    public Action<NodeState> SetMaterial { get; set; }
 
     int IHeapItem<Node>.HeapIndex { get; set; }
 
@@ -59,8 +69,10 @@ public class NodeObject : MonoBehaviour
     public static Material unvisitedMaterial;
     public static Material startMaterial;
     public static Material goalMaterial;
+    public static Material pathMaterial;
     public static Material listedMaterial;
-    private Renderer renderer;
+
+    private new Renderer renderer;
 
     [field: SerializeField]
     public Node Node { get; set; }
@@ -76,15 +88,16 @@ public class NodeObject : MonoBehaviour
         name = $"Node {Node.Position.x}_{Node.Position.y}";
     }
 
-    public void SetMaterial(int index)
+    public void SetMaterial(NodeState index)
     {
         renderer.material = index switch
         {
-            0 => unvisitedMaterial,
-            1 => visitedMaterial,
-            2 => startMaterial,
-            3 => goalMaterial,
-            4 => listedMaterial,
+            NodeState.Unvisited => unvisitedMaterial,
+            NodeState.Visited   => visitedMaterial,
+            NodeState.Start     => startMaterial,
+            NodeState.Goal      => goalMaterial,
+            NodeState.Path      => pathMaterial,
+            NodeState.Listed    => listedMaterial,
             _ => unvisitedMaterial,
         };
     }

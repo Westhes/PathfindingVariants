@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class NodeManager : MonoBehaviour
 {
-    private NodeObject[] NodeObjects { get; set; }
+    public NodeObject[] NodeObjects { get; set; }
     public Node[] Nodes { get; private set; }
     public int NodeCount => Nodes.Length;
 
@@ -18,6 +18,7 @@ public class NodeManager : MonoBehaviour
     [SerializeField] Material unvisitedNodeMaterial;
     [SerializeField] Material startNodeMaterial;
     [SerializeField] Material goalNodeMaterial;
+    [SerializeField] Material pathNodeMaterial;
     [SerializeField] Material listedNodeMaterial;
     [SerializeField] bool diagonalMovement = false;
 
@@ -38,6 +39,7 @@ public class NodeManager : MonoBehaviour
         NodeObject.startMaterial = startNodeMaterial;
         NodeObject.goalMaterial = goalNodeMaterial;
         NodeObject.listedMaterial = listedNodeMaterial;
+        NodeObject.pathMaterial = pathNodeMaterial;
         NodeObjects = FindObjectsOfType<NodeObject>();
         Application.targetFrameRate = 60;
     }
@@ -195,11 +197,11 @@ public class NodeManager : MonoBehaviour
         }
     }
 
-    public void ResetNodes()
+    public void ResetNodeMaterials()
     {
         foreach(var node in Nodes)
         {
-            node?.SetMaterial(0);
+            node?.SetMaterial(NodeState.Unvisited);
         }
     }
 

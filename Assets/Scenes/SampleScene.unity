@@ -33629,8 +33629,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3e98338fd818743b091d68998b3bb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startNode: {fileID: 0}
-  goalNode: {fileID: 0}
+  startNode: {fileID: 1242515958}
+  goalNode: {fileID: 1716836842}
+  SearchWeight: 1.6
+  selectedAlgorithm: 0
 --- !u!1 &765430965
 GameObject:
   m_ObjectHideFlags: 0
@@ -54487,8 +54489,9 @@ MonoBehaviour:
   unvisitedNodeMaterial: {fileID: 2100000, guid: 8e191b46ee4483143b247fd28d8e4a42, type: 2}
   startNodeMaterial: {fileID: 2100000, guid: 1d3aa60b12d3cf04290a52e4d9b4caec, type: 2}
   goalNodeMaterial: {fileID: 2100000, guid: 015d555f7239e0c41b8d22383a46897e, type: 2}
+  pathNodeMaterial: {fileID: 2100000, guid: 9f5fdeabbfa98094182420fdaf100c1f, type: 2}
   listedNodeMaterial: {fileID: 2100000, guid: c4ce0173ee8208e489190370cb279502, type: 2}
-  diagonalMovement: 1
+  diagonalMovement: 0
   gridWidth: 30
   gridHeight: 30
   nodeScale: 0.9

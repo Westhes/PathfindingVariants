@@ -4,22 +4,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PathfindingAlgorithms
+{
+    A_Star,
+    Dijkstra,
+}
+
+/// <summary> Manager class that allows for different pathfinding algorithms to be executed. </summary>
 public class Pathfinding : MonoBehaviour
 {
     [SerializeField] NodeObject startNode;
     [SerializeField] NodeObject goalNode;
-    private static NodeManager nodeManager;
+    [Range(0.05f, 30f)]
+    [SerializeField] float SearchWeight = 2f;
 
-    IPathfindAlgorithm algorithm;
+    [SerializeField] PathfindingAlgorithms selectedAlgorithm;
+    private IPathfindAlgorithm algorithm;
+    private Coroutine pathTraversal;
+
+    private static NodeManager nodeManager;
 
     private NodeObject StartNode
     {
         set
         {
-            if (startNode == value) return;
+            if (startNode == value || (startNode == goalNode && startNode != null)) return;
             startNode = value;
-            nodeManager.ResetNodes();
-            if (startNode && goalNode) algorithm.Search(startNode.Node, goalNode.Node);
+            Search();
         }
     }
 
@@ -27,10 +38,9 @@ public class Pathfinding : MonoBehaviour
     {
         set
         {
-            if (goalNode == value) return;
+            if (goalNode == value || value == startNode) return;
             goalNode = value;
-            nodeManager.ResetNodes();
-            if (startNode && goalNode) algorithm.Search(startNode.Node, goalNode.Node);
+            Search();
         }
     }
 
@@ -63,27 +73,47 @@ public class Pathfinding : MonoBehaviour
     IEnumerator DelayedStart()
     {
         while (!nodeManager.IsInitialized) yield return new WaitForFixedUpdate();
-        algorithm = new A_Star(nodeManager.NodeCount);
+        ApplyAlgorithm();
 
         if (!startNode || !goalNode)
         {
             // Grab random nodes.
-            var nodeManager = FindObjectOfType<NodeManager>();
-
-            int startIndex = UnityEngine.Random.Range(0, nodeManager.Nodes.Length);
-            int goalIndex = UnityEngine.Random.Range(0, nodeManager.Nodes.Length);
-            if (goalIndex == startIndex) goalIndex++;
-
-            var start = nodeManager.Nodes[startIndex];
-            var goal = nodeManager.Nodes[goalIndex];
-
-            //direction = new Vector2(Mathf.Abs(start.Position.x - goal.Position.x), Mathf.Abs(start.Position.y - goal.Position.y));
-            algorithm.Search(start, goal);
+            while (startNode == null) StartNode = nodeManager.NodeObjects[UnityEngine.Random.Range(0, nodeManager.NodeObjects.Length)];
+            while (goalNode == null) GoalNode = nodeManager.NodeObjects[UnityEngine.Random.Range(0, nodeManager.NodeObjects.Length)];
         }
-        else
+    }
+
+    private void Search()
+    {
+        nodeManager.ResetNodeMaterials();
+        // Note: while this doesn't do anything incase goalNode gets set, it still fixes the issue that a path gets drawn that does not exist.
+        // It's also a better solution that resetting every node material
+        algorithm.ResetPath(goalNode.Node);
+        if (pathTraversal != null) StopCoroutine(pathTraversal);
+        if (startNode && goalNode) algorithm.Search(startNode.Node, goalNode.Node);
+        pathTraversal = StartCoroutine(algorithm.DebugTravelPath(goalNode.Node, 0.01f));
+    }
+
+    private void OnValidate()
+    {
+        Heuristic.SearchWeight = SearchWeight;
+        ApplyAlgorithm();
+    }
+
+    private void ApplyAlgorithm()
+    {
+        if (nodeManager != null)
         {
-            //direction = new Vector2(Mathf.Abs(startNode.node.Position.x - goalNode.node.Position.x), Mathf.Abs(startNode.node.Position.y - goalNode.node.Position.y));
-            algorithm.Search(startNode.Node, goalNode.Node);
+            // Apply the correct algorithm
+            algorithm = selectedAlgorithm switch
+            {
+                PathfindingAlgorithms.A_Star => new A_Star(nodeManager.NodeCount),
+                PathfindingAlgorithms.Dijkstra => new Dijkstra(nodeManager.NodeCount),
+                _ => new A_Star(nodeManager.NodeCount),
+            };
+            nodeManager.ResetNodeMaterials();
+            // Redo the pathfinding.
+            if (startNode && goalNode) Search();
         }
     }
 }

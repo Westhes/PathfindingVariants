@@ -25,41 +25,36 @@ public class Dijkstra : PathfindAlgorithmBase, IPathfindAlgorithm
         //Node currentNode = start;
         while (openNodes.Count > 0)
         {
-            Node current = openNodes.RemoveFirst();
-            closedNodes.Add(current);
+            Node currentNode = openNodes.RemoveFirst();
+            closedNodes.Add(currentNode);
 #if VISUALS
-            current.SetMaterial(1);
+            currentNode.SetMaterial(NodeState.Visited);
 #endif
             // Verify that the current node isn't the goal.
-            if (current == goal)
+            if (IsGoal(currentNode, goal))
             {
-#if VISUALS
-                current.SetMaterial(3);
-                start.SetMaterial(2);
-#endif
-                // Traceback.
                 break;
             }
 
             // Add all of the neighbors
-            foreach (var neighbor in current.Neighbors)
+            foreach (var neighbor in currentNode.Neighbors)
             {
                 if (closedNodes.Contains(neighbor)) continue;
 
 
-                float travelCost = current.G_cost + Heuristic.Distance(current, neighbor) + neighbor.Weight;
+                float travelCost = currentNode.G_cost + Heuristic.Distance(currentNode, neighbor) + neighbor.Weight;
 
                 bool isNewNeighbor = !openNodes.Contains(neighbor);
                 if (travelCost < neighbor.G_cost || isNewNeighbor)
                 {
                     neighbor.G_cost = travelCost;
                     neighbor.F_cost = travelCost; // F=G+H. Set F_Cost in order to avoid additional branches in the Node.CompareTo method
-                    neighbor.Parent = current;
+                    neighbor.Parent = currentNode;
 
                     if (isNewNeighbor)
                     {
 #if VISUALS
-                        neighbor.SetMaterial(4);
+                        neighbor.SetMaterial(NodeState.Listed);
 #endif
                         openNodes.Add(neighbor);
                     }

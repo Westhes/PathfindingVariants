@@ -11,7 +11,7 @@ public static class Heuristic
     /// Infinity = Greedy Best First Search.
     /// </summary>
     /// <see href="http://theory.stanford.edu/~amitp/GameProgramming/Variations.html#weighted-a-star"/>
-    public readonly static float SearchWeight = 2f;
+    public static float SearchWeight = 2f;
 
     /// <summary> Heuristic for calculating travel cost</summary>
     /// <param name="a"> Current node </param>

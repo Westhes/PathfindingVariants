@@ -30,22 +30,11 @@ public class A_Star : PathfindAlgorithmBase, IPathfindAlgorithm
             closedNodes.Add(currentNode);
 #if VISUALS
             // Set processed color
-            currentNode.SetMaterial(1);
+            currentNode.SetMaterial(NodeState.Visited);
 #endif
             // Verify that the current node isn't the goal.
-            if (currentNode == goal)
+            if (IsGoal(currentNode, goal))
             {
-#if VISUALS
-                currentNode.SetMaterial(3);
-                start.SetMaterial(2);
-                var tmp = currentNode;
-                while(tmp.Parent != start)
-                {
-                    tmp = tmp.Parent;
-                    tmp.SetMaterial(0);
-                }
-                Debug.Log($"Path length is {currentNode.F_cost}");
-#endif
                 return;
             }
 
@@ -79,7 +68,7 @@ public class A_Star : PathfindAlgorithmBase, IPathfindAlgorithm
                     if (isNewNeighbor)
                     {
 #if VISUALS
-                        neighbor.SetMaterial(4);
+                        neighbor.SetMaterial(NodeState.Listed);
 #endif
                         openNodes.Add(neighbor);
                     }
