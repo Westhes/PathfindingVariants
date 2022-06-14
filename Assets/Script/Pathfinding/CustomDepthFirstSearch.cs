@@ -1,4 +1,5 @@
-﻿#define VISUALS
+﻿//#define VISUALS
+//#define DEBUG_TEXT
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,16 +11,24 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
 
     public CustomDepthFirstSearch(int mapSize) : base(mapSize) => predicate = IsNewNeighbor;
 
-    public int MaxDepth { get; set; } = 9;
+    public int MaxDepth { get; set; } = 13;
     public Node[][] Paths { get; private set; }
 
     private static Predicate<Node> predicate;
 
     public override void Search(Node start, Node finish)
     {
+#if DEBUG_TEXT
+        System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+        watch.Start();
+#endif
         var foundPaths = FindPath(start, finish, MaxDepth);
         Paths = foundPaths.ToArray();
+#if DEBUG_TEXT
+        watch.Stop();
+        Debug.Log($"Execution time of FindPath at Depth {MaxDepth}: {watch.ElapsedMilliseconds} ms");
         Debug.Log($"Paths found {Paths.Length}");
+#endif
     }
 
     static Stack<Node[]> FindPath(Node start, Node goal, int maxDepth)
@@ -31,9 +40,13 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
 
         while (currentNode != null)
         {
+
+#if VISUALS
+            currentNode.SetMaterial(NodeState.Visited);
+#endif
             currentNode.G_cost = depth + 1;
             bool isGoal = IsGoal(currentNode, goal);
-            if (isGoal || currentNode.G_cost == maxDepth || !TryGetNewNeighbor(currentNode, out Node neighbor))
+            if (isGoal || currentNode.G_cost == maxDepth || Heuristic(currentNode, goal) > (maxDepth - depth) || !TryGetNewNeighbor(currentNode, out Node neighbor))
             {
                 // Go back. We either found a deadend, or the goal.
                 if (isGoal)
@@ -70,6 +83,14 @@ public class CustomDepthFirstSearch : PathfindAlgorithmBase, IPathfindAlgorithm
         node.G_cost = 0;
         node.Neighbors.ResetIterator();
         return node.Parent;
+    }
+
+    /// <summary> Calculate manhattan distance between the two nodes. Will probably not work with any other heuristic. </summary>
+    private static int Heuristic(Node a, Node b)
+    {
+        int dx = Mathf.Abs(b.Position.x - a.Position.x);
+        int dy = Mathf.Abs(b.Position.y - a.Position.y);
+        return dx + dy;
     }
 
     /// <summary> Draws the path that the pathfinding algorithm found. </summary>
